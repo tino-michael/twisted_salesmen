@@ -41,4 +41,15 @@ def setup_arguments(ap=None):
         "--simulation_seed", type=int, default=None,
         help="give a seed for the random simulation of the delivery and pickup events")
 
+    routing_group = ap.add_argument_group(
+        title="routing",
+        description="controls the plotting of the 'best' route")
+
+    routing_group.add_argument(
+        "--van_capacity", type=int, default=200,
+        help="the capacity of the van; "
+        "a higher capacity means more delivery points can be served")
+    routing_group.add_argument(
+        "--routing_seed", type=int, default=None,
+        help="give a seed for the randomnes in the event routing")
     return ap
