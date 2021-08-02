@@ -2,6 +2,7 @@
 
 from arguments import setup_arguments
 import simulation as sim
+from routing import single_best
 
 ap = setup_arguments()
 
@@ -14,3 +15,4 @@ deli, pick = sim.generate_events(
     y_max=args.region_extent_y,
     seed=args.simulation_seed)
 
+single_best(args.van_capacity, deli, pick, args.routing_seed)
