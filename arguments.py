@@ -52,4 +52,14 @@ def setup_arguments(ap=None):
     routing_group.add_argument(
         "--routing_seed", type=int, default=None,
         help="give a seed for the randomnes in the event routing")
+    routing_group.add_argument(
+        "--spawn_rate", type=int, default=5,
+        help="how many child routes a parent ought to spawn each generation")
+    routing_group.add_argument(
+        "--survival_rate", type=int, default=5,
+        help="how many routes are to survive each generation")
+    routing_group.add_argument(
+        "--generations", type=int, default=100,
+        help="for how many generations, new routes are to be spawned to find the best one")
+
     return ap

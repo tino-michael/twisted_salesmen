@@ -3,6 +3,7 @@ This Module provides validator functions for a given route
 '''
 import numpy as np
 
+
 def validate_length_one_pickup(route, e_type, deli, pick):
     '''
     This function calculate the length of the given route -- including from and back to depot --

@@ -15,4 +15,6 @@ deli, pick = sim.generate_events(
     y_max=args.region_extent_y,
     seed=args.simulation_seed)
 
-single_best(args.van_capacity, deli, pick, args.routing_seed)
+single_best(
+    args.van_capacity, deli, pick,
+    args.routing_seed, args.spawn_rate, args.survival_rate, args.generations)
