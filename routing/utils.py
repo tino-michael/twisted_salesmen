@@ -22,3 +22,33 @@ def distance_weights_exp(events, origin=(0, 0)):
     sq_dists[sq_dists == 0] = 1
     return np.exp(-(sq_dists**.5) / 100)
 
+
+def only_deliveries(route, evts):
+    '''
+    returns a route containing only deliverie events
+    '''
+    return only_type(route, evts, 'd')
+
+
+def only_pickups(route, evts):
+    '''
+    returns a route containing only pickup events
+    '''
+    return only_type(route, evts, 'p')
+
+
+def only_type(route, evts, t):
+    '''
+    returns a route containing a specific event type only
+    '''
+    return [r for r, e in zip(route, evts) if e == t]
+
+
+def get_capacity(route, evt_types, deliveries):
+    '''
+    Calculates the capacity used by a given route for deliveries
+    '''
+
+    route_deli = only_deliveries(route, evt_types)
+    return np.sum(deliveries[2, route_deli])
+

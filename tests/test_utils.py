@@ -11,7 +11,7 @@ sys.path.append("..")
 import pytest
 import numpy as np
 
-from routing.utils import distance_weights
+from routing.utils import distance_weights, get_capacity
 
 
 @pytest.mark.parametrize(
@@ -28,4 +28,22 @@ def test_distance_weights(xs, ys, origin, expected):
     res = distance_weights(a, origin)
 
     assert (res == expected).all()
+
+
+@pytest.mark.parametrize(
+    "deli,expected",
+    [
+        ([1, 1, 1], 3),
+        ([1, 2, 3], 6)
+    ])
+def test_get_capacity(deli, expected):
+    '''
+    Tests correct capacity calculation over a given route
+    '''
+    route = range(len(deli))
+    deli = np.array([deli, deli, deli])
+
+    cap = get_capacity(route, deli)
+
+    assert cap == expected
 
