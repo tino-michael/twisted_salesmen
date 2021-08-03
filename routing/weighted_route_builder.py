@@ -1,7 +1,6 @@
 import numpy as np
 
-from .utils import distance_weights_exp
-
+from .utils import distance_weights_exp, only_deliveries, only_pickups, get_capacity
 
 def select_next_event(route, events, capacity):
     '''
@@ -73,13 +72,13 @@ def build_route(deliveries, pickups, van_capacity, load=0, route=[], evt_types=[
             # randomly decide to pick a pickup event with the probabilty increasing as the van
             # fills up
             if ('p' not in evt_types) and (np.random.random() < load/van_capacity):
-                p_route = [r for r, e in zip(route, evt_types) if e == 'p']
+                p_route = only_pickups(route, evt_types)
                 idx = select_next_event(p_route, pickups, van_capacity-load)
                 route += [idx]
                 evt_types += ['p']
 
             else:
-                d_route = [r for r, e in zip(route, evt_types) if e == 'd']
+                d_route = only_deliveries(route, evt_types)
                 idx = select_next_event(d_route, deliveries, van_capacity - load)
                 load += deliveries[2, idx]
                 route += [idx]
@@ -89,4 +88,18 @@ def build_route(deliveries, pickups, van_capacity, load=0, route=[], evt_types=[
             break
 
     return route, evt_types
+
+
+def rebuild_route(deliveries, pickups, van_capacity, route, evt_types):
+    '''
+    Rebuilds a route by randomly picking an event along the route, throwing away all events
+    after and drawing new events from there.
+    '''
+    cut_off = np.random.randint(len(route))
+    r_pruned = route[:cut_off]
+    e_pruned = evt_types[:cut_off]
+
+    c_pruned = get_capacity(r_pruned, e_pruned, deliveries)
+
+    return build_route(deliveries, pickups, van_capacity, c_pruned, r_pruned, e_pruned)
 
