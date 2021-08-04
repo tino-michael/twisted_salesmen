@@ -36,7 +36,6 @@ def generate_sub_events(n_evts, x_max, y_max, rng):
     # zero-capacity events make no sense, so bump them up to 5 at least
     cap[cap == 0] = 5
 
-    # this arranges the generated data in tuples of [x, y, c] belonging to one event
     return np.array([pos_x, pos_y, cap])
 
 
