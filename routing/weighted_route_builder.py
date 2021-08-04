@@ -2,7 +2,8 @@ import numpy as np
 
 from .utils import distance_weights_exp, only_deliveries, only_pickups, get_capacity
 
-def select_next_event(route, events, capacity):
+
+def select_next_event(origin, route, events, capacity):
     '''
     Given an existing partial route and a pool of events, selects the next event.
 
@@ -37,9 +38,7 @@ def select_next_event(route, events, capacity):
     # these events are candidates to visit next
     candidates = events[:, candidate_ids]
 
-    # calculate the distance to all candidate events either from last visited event
-    # or from the depot at (0, 0)
-    origin = events[:, route[-1]] if route else (0, 0)
+    # calculate the distance to all candidate events from last visited event
     draw_weights = distance_weights_exp(candidates, origin)
 
     # random draw next event to visit weighted by their distance to current position
@@ -65,6 +64,14 @@ def build_route(deliveries, pickups, van_capacity, load=0, route=[], evt_types=[
     evt_types:
         python list of 'p' or 'd' characters defining pickup or delivery event
     '''
+
+    if len(evt_types) == 0:
+        recent = (0, 0)
+    elif evt_types[-1] == 'd':
+        recent = deliveries[0:2, route[-1]]
+    else:
+        recent = pickups[0:2, route[-1]]
+
     while True:
         try:
             # decide whether do add a delivery or pickup event next.
@@ -73,16 +80,18 @@ def build_route(deliveries, pickups, van_capacity, load=0, route=[], evt_types=[
             # fills up
             if ('p' not in evt_types) and (np.random.random() < load/van_capacity):
                 p_route = only_pickups(route, evt_types)
-                idx = select_next_event(p_route, pickups, van_capacity-load)
+                idx = select_next_event(recent, p_route, pickups, van_capacity-load)
                 route += [idx]
                 evt_types += ['p']
+                recent = pickups[0:2, idx]
 
             else:
                 d_route = only_deliveries(route, evt_types)
-                idx = select_next_event(d_route, deliveries, van_capacity - load)
+                idx = select_next_event(recent, d_route, deliveries, van_capacity - load)
                 load += deliveries[2, idx]
                 route += [idx]
                 evt_types += ['d']
+                recent = deliveries[0:2, idx]
 
         except RuntimeError:
             break
