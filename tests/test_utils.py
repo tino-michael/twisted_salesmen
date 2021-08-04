@@ -41,9 +41,10 @@ def test_get_capacity(deli, expected):
     Tests correct capacity calculation over a given route
     '''
     route = range(len(deli))
+    evt_types = ['d'] * len(deli)
     deli = np.array([deli, deli, deli])
 
-    cap = get_capacity(route, deli)
+    cap = get_capacity(route, evt_types, deli)
 
     assert cap == expected
 
